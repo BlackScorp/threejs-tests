@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <title>Test</title>
+    <style>
+        body {
+            margin: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="viewport">
+
+</div>
+<script src="three.min.js"></script>
+<script>
+    var scene = new THREE.Scene();
+    var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -500, 1000);
+    var renderer = new THREE.WebGLRenderer({alpha: true} );
+    var light = new THREE.AmbientLight(0xffffff);
+    var loader = new THREE.JSONLoader();
+
+    document.body.appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    scene.add(camera);
+    scene.add(light);
+
+
+    var animation;
+
+    // load the model and create everything
+    loader.load('gladiator3.1.json', function (geometry, materials) {
+        var mesh;
+
+        // create a mesh
+        mesh = new THREE.SkinnedMesh(
+                geometry,
+                new THREE.MeshFaceMaterial(materials)
+        );
+
+
+
+        scene.add(mesh);
+        camera.lookAt(mesh);
+
+        render();
+    });
+
+    function render() {
+        //animation.update(.01);
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(render);
+    }
+
+</script>
+</body>
+</html>
