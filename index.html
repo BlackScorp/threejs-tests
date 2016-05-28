@@ -37,7 +37,7 @@
     var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1,100);
     //camera = new THREE.PerspectiveCamera( 40, width / height, 1, 100 );
     var renderer = new THREE.WebGLRenderer({alpha: true} );
-    var light = new THREE.AmbientLight(0xffffff);
+    var light = new THREE.AmbientLight( 0xffffff,1 ); // soft white light
     var loader = new THREE.JSONLoader();
 
     document.body.appendChild(renderer.domElement);
@@ -57,13 +57,18 @@
         materials.forEach( function ( material ) {
 
             material.skinning = true;
-            material.transparent = true;
             material.opacity = 1;
+            material.transparent = true;
+            material.alphaTest = 0.8;
+
         } );
+        var material = new THREE.MeshFaceMaterial(materials);
+
+
         // create a mesh
         mesh = new THREE.SkinnedMesh(
                 geometry,
-                new THREE.MeshFaceMaterial(materials)
+                material
         );
         mesh.scale.z = mesh.scale.y = mesh.scale.x = 50;
 

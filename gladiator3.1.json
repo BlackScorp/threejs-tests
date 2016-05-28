@@ -3517,7 +3517,7 @@
         "mapDiffuseWrap": ["RepeatWrapping","RepeatWrapping"],
         "DbgColor": 15658734,
         "wireframe": false,
-        "colorAmbient": [0.64,0.64,0.64],
+
         "DbgName": "character-skin",
         "mapDiffuse": "character-skin.png",
         "specularCoef": 50,
