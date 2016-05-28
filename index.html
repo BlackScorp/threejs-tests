@@ -57,7 +57,8 @@
         materials.forEach( function ( material ) {
 
             material.skinning = true;
-
+            material.transparent = true;
+            material.opacity = 1;
         } );
         // create a mesh
         mesh = new THREE.SkinnedMesh(
