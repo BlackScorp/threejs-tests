@@ -50,36 +50,50 @@
     var animation;
     var mesh;
     var action = {};
-    var mixer;
-    // load the model and create everything
-    loader.load('gladiator3.1.json', function (geometry, materials) {
+    var mixer = [];
+    var files = [
+        'gladiator3.1.json',
+        'gladiator3.1-shield.json',
+        'gladiator3.1-sword.json',
+        'gladiator3.1-armor.json',
+        'gladiator3.1-torso.json',
+        'gladiator3.1-helmet.json',
+    ];
 
-        materials.forEach( function ( material ) {
+    for(var i = 0,il = files.length;i <il;i++){
+        var current = files[i];
+        loader.load(current, function (geometry, materials) {
 
-            material.skinning = true;
-            material.opacity = 1;
-            material.transparent = true;
-            material.alphaTest = 0.8;
+            materials.forEach( function ( material ) {
 
-        } );
-        var material = new THREE.MeshFaceMaterial(materials);
+                material.skinning = true;
+                material.opacity = 1;
+                material.transparent = true;
+                material.alphaTest = 0.8;
 
-
-        // create a mesh
-        mesh = new THREE.SkinnedMesh(
-                geometry,
-                material
-        );
-        mesh.scale.z = mesh.scale.y = mesh.scale.x = 50;
-
-        mixer  = new THREE.AnimationMixer( mesh );
-        action.idle  = mixer.clipAction( geometry.animations[ 0 ] );
-        action.idle.play();
-        scene.add(mesh);
+            } );
+            var material = new THREE.MeshFaceMaterial(materials);
 
 
-        render();
-    });
+            // create a mesh
+            mesh = new THREE.SkinnedMesh(
+                    geometry,
+                    material
+            );
+            mesh.scale.z = mesh.scale.y = mesh.scale.x = 50;
+
+            var localmixer  = new THREE.AnimationMixer( mesh );
+
+            action.idle  = localmixer.clipAction( geometry.animations[ 0 ] );
+            mixer.push(localmixer);
+            action.idle.play();
+            scene.add(mesh);
+
+
+            render();
+        });
+    }
+
 
     function render() {
         //animation.update(.01);
@@ -87,7 +101,12 @@
         var delta = clock.getDelta();
         var theta = clock.getElapsedTime();
 
-        if ( mixer ) { mixer.update( delta ); }
+        if ( mixer ) {
+            for(var i = 0,il=mixer.length;i < il;i++){
+                var current = mixer[i];
+                current.update(delta);
+            }
+        }
 
         requestAnimationFrame(render);
     }
