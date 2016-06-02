@@ -34,7 +34,7 @@
     var height = window.innerHeight;
     var scene = new THREE.Scene();
     var clock  = new THREE.Clock();
-    var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1,100);
+    var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1,1000);
     //camera = new THREE.PerspectiveCamera( 40, width / height, 1, 100 );
     var renderer = new THREE.WebGLRenderer({alpha: true} );
     var light = new THREE.AmbientLight( 0xffffff,1.5 ); // soft white light
@@ -80,7 +80,7 @@
                     geometry,
                     material
             );
-            mesh.scale.z = mesh.scale.y = mesh.scale.x = 50;
+            mesh.scale.z = mesh.scale.y = mesh.scale.x = 60;
 
             var localmixer  = new THREE.AnimationMixer( mesh );
 
