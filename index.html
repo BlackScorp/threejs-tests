@@ -84,7 +84,7 @@
 
             var localmixer  = new THREE.AnimationMixer( mesh );
             console.log(geometry.animations);
-            action.idle  = localmixer.clipAction( geometry.animations[ 0 ] );
+            action.idle  = localmixer.clipAction( geometry.animations[2] );
             mixer.push(localmixer);
             action.idle.play();
             scene.add(mesh);
