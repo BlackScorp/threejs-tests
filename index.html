@@ -123,7 +123,7 @@
             ++loaded;
 
             if(loaded == files.length){
-                playAnimation('idle');
+                playAnimation('attack');
             }
 
         });
@@ -138,7 +138,7 @@
     }
     render();
     window.addEventListener( 'click', function(e){
-        playAnimation('attack');
+        playAnimation('idle');
     }, false );
     function render() {
         //animation.update(.01);
