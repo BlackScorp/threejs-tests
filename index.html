@@ -13,6 +13,7 @@
             height: 100%;
             padding: 0;
         }
+
         canvas {
             width: 100%;
             height: 100%;
@@ -22,56 +23,75 @@
             left: 0;
             top: 0;
         }
+        .title{
+            text-align: center;
+            font-size: 50px;
+            color:red;
+            position: absolute;
+            width: 100%;
+            z-index: 2;
+        }
+        .viewport{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+
+        }
     </style>
 </head>
 <body>
+<div class="title" >Click Me</div>
 <div class="viewport">
 
 </div>
 <script src="three.min.js"></script>
 <script>
-    var width  = window.innerWidth;
+    var width = window.innerWidth;
     var height = window.innerHeight;
     var scene = new THREE.Scene();
-    var clock  = new THREE.Clock();
-    var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1,1000);
+    var clock = new THREE.Clock();
+    var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
     //camera = new THREE.PerspectiveCamera( 40, width / height, 1, 100 );
-    var renderer = new THREE.WebGLRenderer({alpha: true} );
-    var light = new THREE.AmbientLight( 0xffffff,1.5 ); // soft white light
+    var renderer = new THREE.WebGLRenderer({alpha: true});
+    var light = new THREE.AmbientLight(0xffffff, 1.5); // soft white light
     var loader = new THREE.JSONLoader();
 
-    document.body.appendChild(renderer.domElement);
+    document.querySelector('.viewport').appendChild(renderer.domElement);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.position.set( 0, 200, 0 );
+    camera.position.set(0, 200, 0);
     scene.add(camera);
     scene.add(light);
 
 
     var animation;
     var mesh;
-    var action = {};
+    var actions = {};
     var mixer = [];
     var files = [
         'gladiator3.1.json',
-       //'gladiator3.1-shield.json',
-       //'gladiator3.1-sword.json',
-       //'gladiator3.1-armor.json',
-       //'gladiator3.1-torso.json',
-       //'gladiator3.1-helmet.json',
+        'gladiator3.1-shield.json',
+        'gladiator3.1-sword.json',
+        'gladiator3.1-armor.json',
+        'gladiator3.1-pants.json',
+        'gladiator3.1-helmet.json',
     ];
-
-    for(var i = 0,il = files.length;i <il;i++){
+    var loaded = 0;
+    for (var i = 0, il = files.length; i < il; i++) {
         var current = files[i];
         loader.load(current, function (geometry, materials) {
 
-            materials.forEach( function ( material ) {
+            materials.forEach(function (material) {
 
                 material.skinning = true;
                 material.opacity = 1;
                 material.transparent = true;
                 material.alphaTest = 0.8;
 
-            } );
+            });
             var material = new THREE.MeshFaceMaterial(materials);
 
 
@@ -82,27 +102,52 @@
             );
             mesh.scale.z = mesh.scale.y = mesh.scale.x = 60;
 
-            var localmixer  = new THREE.AnimationMixer( mesh );
-            console.log(geometry.animations);
-            action.idle  = localmixer.clipAction( geometry.animations[2] );
+            var localmixer = new THREE.AnimationMixer(mesh);
+            for(var i=0,il = geometry.animations.length;i<il;i++){
+                var current = geometry.animations[i];
+                if(actions[current.name] == undefined){
+                    actions[current.name] = [];
+                }
+                var clipaction = localmixer.clipAction(current);
+
+                actions[current.name].push(clipaction);
+            }
+
+
+
+
             mixer.push(localmixer);
-            action.idle.play();
+
+
             scene.add(mesh);
+            ++loaded;
 
-
+            if(loaded == files.length){
+                playAnimation('idle');
+            }
 
         });
     }
+    function playAnimation(animationName){
+        var animation = actions[animationName];
+        console.log(animation);
+        for(var i=0,il=animation.length;i<il;i++){
+            var animationObject = animation[i];
+            animationObject.play();
+        }
+    }
     render();
-
+    window.addEventListener( 'click', function(e){
+        playAnimation('attack');
+    }, false );
     function render() {
         //animation.update(.01);
         renderer.render(scene, camera);
         var delta = clock.getDelta();
         var theta = clock.getElapsedTime();
 
-        if ( mixer ) {
-            for(var i = 0,il=mixer.length;i < il;i++){
+        if (mixer) {
+            for (var i = 0, il = mixer.length; i < il; i++) {
                 var current = mixer[i];
                 current.update(delta);
             }
