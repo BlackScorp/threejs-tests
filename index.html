@@ -123,22 +123,43 @@
             ++loaded;
 
             if(loaded == files.length){
-                playAnimation('attack');
+                playAnimation('idle',0);
             }
 
         });
     }
-    function playAnimation(animationName){
+    function stopAnimation(animationName){
         var animation = actions[animationName];
-        console.log(animation);
+
         for(var i=0,il=animation.length;i<il;i++){
             var animationObject = animation[i];
+            if(animationObject.isRunning()){
+                animationObject.stop();
+            }
+
+
+
+        }
+    }
+    function playAnimation(animationName,loop){
+        var animation = actions[animationName];
+
+        for(var i=0,il=animation.length;i<il;i++){
+            var animationObject = animation[i];
+            if(animationObject.isRunning()){
+                animationObject.stop();
+            }
+            if(loop > 0){
+                animationObject.setLoop(loop);
+            }
+
             animationObject.play();
         }
     }
     render();
     window.addEventListener( 'click', function(e){
-        playAnimation('idle');
+        stopAnimation('idle');
+        playAnimation('attack',1);
     }, false );
     function render() {
         //animation.update(.01);
