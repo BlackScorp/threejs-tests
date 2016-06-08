@@ -23,13 +23,15 @@
             left: 0;
             top: 0;
         }
-        .title{
+        .actions{
             text-align: center;
-            font-size: 50px;
-            color:red;
+
             position: absolute;
             width: 100%;
             z-index: 2;
+        }
+        .actions button{
+            font-size: 2em;
         }
         .viewport{
             width: 100%;
@@ -44,7 +46,13 @@
     </style>
 </head>
 <body>
-<div class="title" >Click Me</div>
+<div class="actions">
+    <button class="idle" type="button">Idle</button>
+    <button class="attack" type="button">Attack</button>
+    <button class="get_hit" type="button">Get hit</button>
+    <button class="fall" type="button">Fall</button>
+</div>
+
 <div class="viewport">
 
 </div>
@@ -128,9 +136,14 @@
 
         });
     }
-    function stopAnimation(animationName){
-        var animation = actions[animationName];
 
+    var runningAnimation = '';
+    function stopAnimation(animationName){
+
+        var animation = actions[animationName];
+        if(animation == undefined){
+            return;
+        }
         for(var i=0,il=animation.length;i<il;i++){
             var animationObject = animation[i];
             if(animationObject.isRunning()){
@@ -141,9 +154,12 @@
 
         }
     }
-    function playAnimation(animationName,loop){
-        var animation = actions[animationName];
 
+    function playAnimation(animationName,loop){
+
+        stopAnimation(runningAnimation);
+        var animation = actions[animationName];
+        runningAnimation = animationName;
         for(var i=0,il=animation.length;i<il;i++){
             var animationObject = animation[i];
             if(animationObject.isRunning()){
@@ -157,10 +173,14 @@
         }
     }
     render();
-    window.addEventListener( 'click', function(e){
-        stopAnimation('idle');
-        playAnimation('attack',1);
-    }, false );
+    function  handle(e){
+        var button = e.target;
+        playAnimation(button.className,1);
+    }
+    document.querySelector('.actions')
+            .addEventListener( 'click', handle, false )
+            .addEventListener( 'touchstart', handle, false );
+    ;
     function render() {
         //animation.update(.01);
         renderer.render(scene, camera);
